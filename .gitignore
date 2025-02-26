@@ -1,0 +1,16 @@
+# Node.js 関連
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# 画像ディレクトリ (大量の画像をリポジトリに含めないため)
+/images/*
+/images_webp/*
+
+# ただし、画像ディレクトリ自体は維持するための .gitkeep ファイルは含める
+!/images/.gitkeep
+!/images_webp/.gitkeep
+
+# OS 関連
+.DS_Store
+Thumbs.db

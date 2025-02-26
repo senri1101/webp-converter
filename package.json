@@ -1,0 +1,12 @@
+{
+    "name": "bulk-webp-converter",
+    "version": "1.0.0",
+    "description": "Bulk image converter to WebP format with size optimization",
+    "main": "convert.js",
+    "scripts": {
+      "start": "node convert.js"
+    },
+    "dependencies": {
+      "sharp": "^0.32.6"
+    }
+  }
