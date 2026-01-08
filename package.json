@@ -1,12 +1,18 @@
 {
-    "name": "bulk-webp-converter",
-    "version": "1.0.0",
-    "description": "Bulk image converter to WebP format with size optimization",
-    "main": "convert.js",
-    "scripts": {
-      "start": "node convert.js"
-    },
-    "dependencies": {
-      "sharp": "^0.32.6"
-    }
+  "name": "bulk-webp-converter",
+  "version": "1.0.0",
+  "description": "Bulk image converter to WebP format with size optimization",
+  "main": "convert.js",
+  "scripts": {
+    "start": "node convert.js",
+    "convert": "node convert.js",
+    "convert:high-quality": "node convert.js --config=high-quality",
+    "convert:thumbnail": "node convert.js --config=thumbnail",
+    "convert:thumbnail-small": "node convert.js --config=thumbnail-small",
+    "convert:thumbnail-large": "node convert.js --config=thumbnail-large",
+    "convert:ogp": "node convert.js --config=ogp"
+  },
+  "dependencies": {
+    "sharp": "^0.32.6"
   }
+}

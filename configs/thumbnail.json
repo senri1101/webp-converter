@@ -1,0 +1,15 @@
+{
+  "name": "サムネイル版（300px）",
+  "description": "リスト表示、グリッド表示、一覧ページ用",
+  "sourceDir": "./assets",
+  "outputDir": "./assets_webp_thumbnail",
+  "quality": 70,
+  "targetSize": 50,
+  "minQuality": 60,
+  "resize": {
+    "enabled": true,
+    "width": 300,
+    "height": 300
+  },
+  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+}

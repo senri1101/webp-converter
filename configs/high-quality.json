@@ -1,0 +1,15 @@
+{
+  "name": "高品質版",
+  "description": "詳細表示、拡大表示、アーカイブ用",
+  "sourceDir": "./assets",
+  "outputDir": "./assets_webp",
+  "quality": 80,
+  "targetSize": 200,
+  "minQuality": 80,
+  "resize": {
+    "enabled": false,
+    "width": 1200,
+    "height": 630
+  },
+  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+}

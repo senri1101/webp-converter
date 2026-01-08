@@ -29,37 +29,72 @@ yarn install
 
 ## 使用方法
 
-1. `convert.js`ファイル内の設定を必要に応じて変更します:
+### 方法1: 設定ファイルを使った変換（推奨）
 
-```javascript
-const config = {
-  sourceDir: './images', // 変換元の画像があるディレクトリ
-  outputDir: './images_webp', // 変換後のWebP画像を保存するディレクトリ
-  quality: 80, // WebPの品質 (0-100)
-  targetSize: 20, // 目標サイズ (KB)
-  minQuality: 40, // 最小品質
-  resize: {
-    enabled: false, // リサイズ機能の有効/無効
-    width: 1200, // 最大幅
-    height: 630 // 最大高さ (OGP画像用の一般的なアスペクト比は1.91:1)
-  },
-  extensions: ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'], // 変換対象の拡張子
-  concurrency: Math.max(1, cpus().length - 1) // 並列処理数
-};
-```
-
-2. スクリプトを実行します:
+設定ファイルを指定して変換を実行できます。
 
 ```bash
-npm start
-# または
-node convert.js
+# 高品質版（元サイズ維持）で変換
+npm run convert:high-quality
+
+# サムネイル版（300x300px）で変換
+npm run convert:thumbnail
+
+# 超軽量サムネイル版（200x200px）で変換
+npm run convert:thumbnail-small
+
+# 高品質サムネイル版（512x512px）で変換
+npm run convert:thumbnail-large
+
+# OGP画像用（1200x630px）で変換
+npm run convert:ogp
+```
+
+### 方法2: カスタム設定ファイルを使用
+
+```bash
+node convert.js --config=設定ファイル名
+```
+
+### 利用可能な設定一覧
+
+| 設定名 | サイズ | 品質 | 用途 |
+| -------　|　--------　|　------　|　------　|
+| `high-quality` | 元サイズ維持 | 80% | 詳細表示、アーカイブ |
+| `thumbnail` | 300x300px | 70% | リスト・グリッド表示 |
+| `thumbnail-small` | 200x200px | 65% | モバイル、超高速読み込み |
+| `thumbnail-large` | 512x512px | 75% | カード表示、Retina対応 |
+| `ogp` | 1200x630px | 85% | SNSシェア用OGP画像 |
+
+詳細は [CONFIGURATIONS.md](./CONFIGURATIONS.md) を参照してください。
+
+### 方法3: 設定ファイルをカスタマイズ
+
+`configs/` ディレクトリ内の設定ファイルを編集できます。
+
+例: `configs/thumbnail.json`
+
+```json
+{
+  "name": "サムネイル版（300px）",
+  "description": "リスト表示、グリッド表示、一覧ページ用",
+  "sourceDir": "./assets",
+  "outputDir": "./assets_webp_thumbnail",
+  "quality": 70,
+  "targetSize": 50,
+  "minQuality": 60,
+  "resize": {
+    "enabled": true,
+    "width": 300,
+    "height": 300
+  }
+}
 ```
 
 ## 設定オプション
 
 | オプション | 説明 |
-|------------|------|
+|　------------　|　------　|
 | `sourceDir` | 変換元の画像が格納されているディレクトリのパス |
 | `outputDir` | 変換後のWebP画像を保存するディレクトリのパス |
 | `quality` | WebP変換の初期品質設定 (0-100) |
@@ -71,19 +106,34 @@ node convert.js
 | `extensions` | 変換対象とするファイル拡張子の配列 |
 | `concurrency` | 同時に実行する変換プロセスの数 |
 
+## 変換結果の例
+
+実際の変換結果（57ファイル）:
+
+### 高品質版（元サイズ維持）
+
+- 元サイズ: 35.05 MB
+- 変換後: 2.56 MB
+- 削減率: **92.71%**
+- 処理時間: 2.40秒
+
+### サムネイル版（300x300px）
+
+- 元サイズ: 35.05 MB
+- 変換後: 0.35 MB
+- 削減率: **99.01%**
+- 平均ファイルサイズ: 6.14 KB
+- 処理時間: 1.26秒
+
 ## OGP画像としての最適化
 
-OGP（Open Graph Protocol）画像として使用する場合、以下の設定が推奨されます:
+OGP（Open Graph Protocol）画像として使用する場合は、`ogp` 設定を使用してください:
 
-```javascript
-resize: {
-  enabled: true,
-  width: 1200,
-  height: 630
-}
+```bash
+npm run convert:ogp
 ```
 
-これは一般的なOGP画像の推奨サイズである1200×630ピクセル（アスペクト比1.91:1）に合わせています。
+一般的なOGP画像の推奨サイズである1200×630ピクセル（アスペクト比1.91:1）に最適化されます。
 
 ## 注意事項
 

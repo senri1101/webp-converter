@@ -1,0 +1,15 @@
+{
+  "name": "高品質サムネイル版（512px）",
+  "description": "カード表示、中サイズプレビュー、Retinaディスプレイ対応",
+  "sourceDir": "./assets",
+  "outputDir": "./assets_webp_thumbnail_large",
+  "quality": 75,
+  "targetSize": 100,
+  "minQuality": 65,
+  "resize": {
+    "enabled": true,
+    "width": 512,
+    "height": 512
+  },
+  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+}

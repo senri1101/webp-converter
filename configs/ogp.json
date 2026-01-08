@@ -1,0 +1,15 @@
+{
+  "name": "OGP画像用",
+  "description": "SNSシェア用のOGP画像（1200x630px）",
+  "sourceDir": "./assets",
+  "outputDir": "./assets_webp_ogp",
+  "quality": 85,
+  "targetSize": 300,
+  "minQuality": 75,
+  "resize": {
+    "enabled": true,
+    "width": 1200,
+    "height": 630
+  },
+  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+}
