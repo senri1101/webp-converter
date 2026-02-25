@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bulk WebP Converter</title>
+    <meta
+      name="description"
+      content="Convert multiple images to WebP in your browser. No uploads, no server, fully client-side."
+    />
+    <meta name="theme-color" content="#0b1f2a" />
+    <link rel="canonical" href="https://senri1101.github.io/webp-converter/" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Bulk WebP Converter" />
+    <meta
+      property="og:description"
+      content="Convert and resize images to WebP directly in your browser."
+    />
+    <meta property="og:url" content="https://senri1101.github.io/webp-converter/" />
+    <meta property="og:image" content="https://senri1101.github.io/webp-converter/assets/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bulk WebP Converter" />
+    <meta
+      name="twitter:description"
+      content="Fast local image conversion to WebP with quality and resize presets."
+    />
+    <meta name="twitter:image" content="https://senri1101.github.io/webp-converter/assets/og-image.png" />
+
+    <link rel="icon" type="image/svg+xml" href="./assets/logo.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/favicon-16.png" />
+    <link rel="apple-touch-icon" href="./assets/apple-touch-icon.png" />
+    <link rel="manifest" href="./site.webmanifest" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="background-glow" aria-hidden="true"></div>
+    <div class="page">
+      <header class="hero card reveal">
+        <div class="brand-wrap">
+          <img
+            src="./assets/logo.svg"
+            alt="Bulk WebP Converter logo"
+            class="brand-logo"
+            width="88"
+            height="88"
+          />
+          <div class="hero-text">
+            <h1>Bulk WebP Converter</h1>
+            <p>Fast image conversion in your browser. Files never leave your device.</p>
+          </div>
+        </div>
+        <p class="privacy-chip">Local-first processing</p>
+      </header>
+
+      <main class="layout">
+        <section class="card controls reveal">
+          <h2>Input & Settings</h2>
+
+          <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Upload images">
+            <p class="dropzone-title">Drop image files here</p>
+            <p class="dropzone-subtitle">or click to select multiple files</p>
+          </div>
+          <input id="file-input" type="file" accept="image/*" multiple hidden />
+
+          <p id="selection-label" class="selection-label">No files selected.</p>
+
+          <div class="control-grid">
+            <label class="field">
+              <span>Preset</span>
+              <select id="preset-select">
+                <option value="high-quality">High Quality (Original Size)</option>
+                <option value="thumbnail">Thumbnail 300x300</option>
+                <option value="thumbnail-small">Ultra Lightweight 200x200</option>
+                <option value="thumbnail-large">High Quality Thumbnail 512x512</option>
+                <option value="ogp">OGP 1200x630</option>
+                <option value="thumbnail-1024">Thumbnail 1024x1024</option>
+                <option value="original-2048">Original 2048x2048</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+
+            <label class="field">
+              <span>Initial Quality (0-100)</span>
+              <input id="quality-input" type="number" min="0" max="100" step="1" />
+            </label>
+
+            <label class="field">
+              <span>Minimum Quality (0-100)</span>
+              <input id="min-quality-input" type="number" min="0" max="100" step="1" />
+            </label>
+
+            <label class="field">
+              <span>Target Size (KB, optional)</span>
+              <input id="target-size-input" type="number" min="1" step="1" />
+            </label>
+
+            <label class="checkbox-field">
+              <input id="resize-enabled" type="checkbox" />
+              <span>Enable resize</span>
+            </label>
+
+            <label class="field">
+              <span>Max Width (px)</span>
+              <input id="max-width-input" type="number" min="1" step="1" />
+            </label>
+
+            <label class="field">
+              <span>Max Height (px)</span>
+              <input id="max-height-input" type="number" min="1" step="1" />
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button id="convert-button" class="btn btn-primary">Convert to WebP</button>
+            <button id="download-button" class="btn btn-secondary" disabled>Download ZIP</button>
+            <button id="clear-button" class="btn btn-ghost">Clear</button>
+          </div>
+
+          <div class="status-block">
+            <p id="status-text">Ready.</p>
+            <progress id="progress-bar" value="0" max="1"></progress>
+          </div>
+        </section>
+
+        <section class="card results reveal">
+          <div class="results-head">
+            <h2>Conversion Results</h2>
+            <p id="summary-text">No results yet.</p>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>File</th>
+                  <th>Original</th>
+                  <th>WebP</th>
+                  <th>Saved</th>
+                  <th>Quality</th>
+                  <th>Download</th>
+                </tr>
+              </thead>
+              <tbody id="results-body">
+                <tr>
+                  <td colspan="6" class="placeholder">Converted files will appear here.</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

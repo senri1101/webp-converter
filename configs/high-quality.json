@@ -1,6 +1,6 @@
 {
-  "name": "高品質版",
-  "description": "詳細表示、拡大表示、アーカイブ用",
+  "name": "High Quality",
+  "description": "For detail views, zoomed previews, and archives",
   "sourceDir": "./assets",
   "outputDir": "./assets_webp",
   "quality": 80,
@@ -11,5 +11,13 @@
     "width": 1200,
     "height": 630
   },
-  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+  "extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tiff",
+    ".svg"
+  ]
 }

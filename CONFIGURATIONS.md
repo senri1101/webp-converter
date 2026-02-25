@@ -1,22 +1,22 @@
-# WebP変換設定集
+# WebP Configuration Guide
 
-このファイルには、用途別のWebP変換設定を記録しています。
+This document describes the available WebP conversion presets and how to customize them.
 
-## 設定一覧
+## Preset Overview
 
-### 1. 元サイズ版（高品質）
+### 1. High Quality (Original Size)
 
-**用途:** 詳細表示、拡大表示、アーカイブ用
+**Use case:** Detail views, zoom views, archives
 
 ```javascript
 const config = {
-  sourceDir: "./assets", // 変換元ディレクトリ
-  outputDir: "./assets_webp", // 出力先ディレクトリ
-  quality: 80, // WebP品質 (0-100)
-  targetSize: 200, // 目標ファイルサイズ (KB)
-  minQuality: 80, // 最低品質
+  sourceDir: "./assets", // input directory
+  outputDir: "./assets_webp", // output directory
+  quality: 80, // initial WebP quality (0-100)
+  targetSize: 200, // target file size in KB
+  minQuality: 80, // minimum quality threshold
   resize: {
-    enabled: false, // リサイズ無効
+    enabled: false, // keep original resolution
     width: 1200,
     height: 630,
   },
@@ -25,65 +25,50 @@ const config = {
 };
 ```
 
-**特徴:**
+**Highlights:**
 
-- 元の画像サイズとアスペクト比を維持
-- 高品質（quality 80%）
-- リサイズなし
-- 平均削減率: 約93%
-
-**実績例（アプリデザイン変換）:**
-
-- 元サイズ: 35.05 MB
-- 変換後: 2.56 MB
-- 削減率: 92.71%
-- ファイル数: 57ファイル
+- Preserves original dimensions and aspect ratio
+- High visual quality (`quality: 80`)
+- No resize step
+- Typical size reduction around 93%
 
 ---
 
-### 2. サムネイル版（軽量）
+### 2. Thumbnail (Lightweight 300x300)
 
-**用途:** リスト表示、グリッド表示、一覧ページ
+**Use case:** List views, grid views, gallery pages
 
 ```javascript
 const config = {
-  sourceDir: "./assets", // 変換元ディレクトリ
-  outputDir: "./assets_webp_thumbnail", // 出力先ディレクトリ
-  quality: 70, // WebP品質 (0-100)
-  targetSize: 50, // 目標ファイルサイズ (KB)
-  minQuality: 60, // 最低品質
+  sourceDir: "./assets", // input directory
+  outputDir: "./assets_webp_thumbnail", // output directory
+  quality: 70,
+  targetSize: 50,
+  minQuality: 60,
   resize: {
-    enabled: true, // リサイズ有効
-    width: 300, // 最大幅 300px
-    height: 300, // 最大高さ 300px
+    enabled: true,
+    width: 300,
+    height: 300,
   },
   extensions: [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"],
   concurrency: Math.max(1, cpus().length - 1),
 };
 ```
 
-**特徴:**
+**Highlights:**
 
-- 最大300x300pxにリサイズ（アスペクト比維持）
-- 中品質（quality 70%）
-- 平均ファイルサイズ: 約6KB
-- 平均削減率: 約99%
-
-**実績例（アプリデザイン変換）:**
-
-- 元サイズ: 35.05 MB
-- 変換後: 0.35 MB (350 KB)
-- 削減率: 99.01%
-- ファイル数: 57ファイル
-- 平均ファイルサイズ: 6.14 KB
+- Resizes up to 300x300 while preserving aspect ratio
+- Balanced quality and size
+- Typical average file size around 6 KB
+- Typical reduction around 99%
 
 ---
 
-## その他の設定例
+## Other Preset Examples
 
-### 3. 超軽量サムネイル（200x200px）
+### 3. Ultra Lightweight Thumbnail (200x200)
 
-**用途:** モバイルアプリのリスト表示、超高速読み込みが必要な場合
+**Use case:** Mobile-heavy screens, aggressive performance targets
 
 ```javascript
 const config = {
@@ -100,9 +85,9 @@ const config = {
 
 ---
 
-### 4. 高品質サムネイル（512x512px）
+### 4. High Quality Thumbnail (512x512)
 
-**用途:** カード表示、中サイズプレビュー、Retinaディスプレイ対応
+**Use case:** Card previews, medium-sized previews, retina assets
 
 ```javascript
 const config = {
@@ -119,9 +104,9 @@ const config = {
 
 ---
 
-### 5. OGP画像用
+### 5. OGP Image (1200x630)
 
-**用途:** SNSシェア用のOGP画像（推奨サイズ: 1200x630px）
+**Use case:** Open Graph images for social sharing
 
 ```javascript
 const config = {
@@ -138,14 +123,14 @@ const config = {
 
 ---
 
-### 6. サムネイル版（1024x1024px）
+### 6. Large Thumbnail (1024x1024)
 
-**用途:** 大きめのサムネイル、一覧・拡大プレビュー兼用
+**Use case:** Large thumbnails and lightweight preview assets
 
 ```javascript
 const config = {
   quality: 25,
-  targetSize: null, // サイズ目標は使わず品質固定
+  targetSize: null, // fixed quality, no target-size adjustment
   minQuality: 25,
   resize: {
     enabled: true,
@@ -157,14 +142,14 @@ const config = {
 
 ---
 
-### 7. オリジナル版（2048x2048px）
+### 7. Original Export (2048x2048)
 
-**用途:** 高品質のオリジナル書き出し
+**Use case:** High-quality output for larger displays
 
 ```javascript
 const config = {
   quality: 90,
-  targetSize: null, // サイズ目標は使わず品質固定
+  targetSize: null, // fixed quality, no target-size adjustment
   minQuality: 90,
   resize: {
     enabled: true,
@@ -176,53 +161,46 @@ const config = {
 
 ---
 
-## 使い方
+## Usage
 
-### 方法1: 設定ファイルを使った変換（推奨）
-
-設定ファイルを指定して変換を実行できます。
+### Method 1: Run preset commands (recommended)
 
 ```bash
-# 高品質版で変換
 npm run convert:high-quality
-
-# サムネイル版（300px）で変換
 npm run convert:thumbnail
-
-# 超軽量サムネイル版（200px）で変換
 npm run convert:thumbnail-small
-
-# 高品質サムネイル版（512px）で変換
 npm run convert:thumbnail-large
-
-# OGP画像用で変換
 npm run convert:ogp
-
-# 1024pxサムネ + 2048pxオリジナルを一括で生成
 npm run convert:thumbnail-original
+```
 
-# カスタム設定ファイルを使用
+### Method 2: Run with a specific config name
+
+```bash
 node convert.js --config=your-config-name
+```
 
-# 複数設定を一括で実行
+### Method 3: Run multiple configs in one command
+
+```bash
 node convert.js --config=thumbnail-1024,original-2048
 ```
 
-### 方法2: 設定ファイルをカスタマイズする
+### Method 4: Edit existing config files
 
-1. `configs/` ディレクトリ内の設定ファイル（例: `thumbnail.json`）を編集
-2. `sourceDir` と `outputDir` を適切なパスに変更
-3. 上記のコマンドで実行
+1. Edit files in `configs/` (for example `configs/thumbnail.json`)
+2. Update `sourceDir` and `outputDir` for your environment
+3. Execute the related command
 
-### 方法3: 新しい設定ファイルを作成する
+### Method 5: Create a new config file
 
-1. `configs/` ディレクトリに新しいJSONファイルを作成（例: `my-config.json`）
-2. 以下の形式で設定を記述
+1. Create a new JSON file under `configs/` (example: `my-config.json`)
+2. Use the format below
 
 ```json
 {
-  "name": "設定名",
-  "description": "説明",
+  "name": "My Preset Name",
+  "description": "Preset description",
   "sourceDir": "./assets",
   "outputDir": "./assets_output",
   "quality": 80,
@@ -237,23 +215,20 @@ node convert.js --config=thumbnail-1024,original-2048
 }
 ```
 
-3. `node convert.js --config=my-config` で実行
-
-### 利用可能な設定一覧を確認
+3. Run:
 
 ```bash
-# 存在しない設定名を指定すると、利用可能な設定一覧が表示されます
-node convert.js --config=list
+node convert.js --config=my-config
 ```
 
-## パラメータ説明
+## Parameter Reference
 
-| パラメータ      | 説明                       | 推奨値   |
-| --------------- | -------------------------- | -------- |
-| `quality`       | WebP変換時の初期品質       | 60-90    |
-| `targetSize`    | 目標ファイルサイズ（KB）   | 30-200   |
-| `minQuality`    | 許容する最低品質           | 55-80    |
-| `resize.width`  | リサイズ時の最大幅（px）   | 200-1200 |
-| `resize.height` | リサイズ時の最大高さ（px） | 200-1200 |
+| Parameter       | Description                                      | Typical Range |
+| --------------- | ------------------------------------------------ | ------------- |
+| `quality`       | Initial quality used for WebP output             | 60-90         |
+| `targetSize`    | Target file size in KB                           | 30-200        |
+| `minQuality`    | Lower bound for quality reduction                | 55-80         |
+| `resize.width`  | Max width when resizing                          | 200-1200      |
+| `resize.height` | Max height when resizing                         | 200-1200      |
 
-**Note:** `resize` の `fit: "inside"` により、アスペクト比は常に維持されます。
+Note: `fit: "inside"` is used internally, so aspect ratio is preserved.

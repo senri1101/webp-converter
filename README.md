@@ -1,164 +1,137 @@
-# Bulk WebP Image Converter
+# Bulk WebP Converter
 
-このツールは複数の画像を効率的にWebP形式に変換するNode.jsスクリプトです。WebPは優れた圧縮率を提供する画像形式で、ウェブサイトのパフォーマンス向上に役立ちます。
+A toolkit for converting many images to WebP with file-size optimization.
 
-## 主な機能
+This repository now contains two ways to use the converter:
 
-- 複数のCPUコアを活用した並列処理
-- ターゲットサイズに合わせた自動品質調整
-- 複数の画像形式（JPG, PNG, GIF, BMP, TIFF）に対応
-- ディレクトリ構造を維持したバッチ変換
-- 必要に応じた画像リサイズ機能
-- 詳細な変換レポート（圧縮率、サイズ削減など）
+- CLI mode (Node.js + sharp) for local batch processing
+- Web mode (static GitHub Pages app) for browser-based conversion
 
-## 要件
+## Features
 
-- Node.js (v12以上推奨)
-- NPM または Yarn
+- Multi-threaded conversion in CLI mode
+- Adjustable quality with optional target-size control
+- Optional resize settings per preset
+- Batch conversion with directory structure preservation (CLI)
+- Browser-based conversion with ZIP export (Web)
+- OGP metadata, favicon, and logo for the web app
 
-## インストール方法
+## Requirements (CLI)
 
-1. リポジトリをクローンまたはダウンロードします
-2. 依存関係をインストールします:
+- Node.js 12+
+- npm or yarn
+
+## Installation (CLI)
 
 ```bash
 npm install
-# または
-yarn install
 ```
 
-## 使用方法
+## CLI Usage
 
-### 方法1: 設定ファイルを使った変換（推奨）
-
-設定ファイルを指定して変換を実行できます。
+### Preset commands
 
 ```bash
-# 高品質版（元サイズ維持）で変換
 npm run convert:high-quality
-
-# サムネイル版（300x300px）で変換
 npm run convert:thumbnail
-
-# 超軽量サムネイル版（200x200px）で変換
 npm run convert:thumbnail-small
-
-# 高品質サムネイル版（512x512px）で変換
 npm run convert:thumbnail-large
-
-# OGP画像用（1200x630px）で変換
 npm run convert:ogp
-
-# 1024pxサムネ + 2048pxオリジナルを一括で生成
 npm run convert:thumbnail-original
 ```
 
-### 方法2: カスタム設定ファイルを使用
+### Use a custom config
 
 ```bash
-node convert.js --config=設定ファイル名
+node convert.js --config=your-config-name
 ```
 
-複数の設定を一括で実行する場合はカンマ区切りで指定します:
+### Run multiple configs in one command
 
 ```bash
 node convert.js --config=thumbnail-1024,original-2048
 ```
 
-### 利用可能な設定一覧
+### Available preset summary
 
-| 設定名            | サイズ       | 品質 | 用途                     |
-| ----------------- | ------------ | ---- | ------------------------ |
-| `high-quality`    | 元サイズ維持 | 80%  | 詳細表示、アーカイブ     |
-| `thumbnail`       | 300x300px    | 70%  | リスト・グリッド表示     |
-| `thumbnail-small` | 200x200px    | 65%  | モバイル、超高速読み込み |
-| `thumbnail-large` | 512x512px    | 75%  | カード表示、Retina対応   |
-| `ogp`             | 1200x630px   | 85%  | SNSシェア用OGP画像       |
-| `thumbnail-1024`  | 1024x1024px  | 25%  | 大きめサムネイル         |
-| `original-2048`   | 2048x2048px  | 90%  | 高品質オリジナル         |
+| Preset            | Resize       | Quality | Typical usage                     |
+| ----------------- | ------------ | ------- | --------------------------------- |
+| `high-quality`    | Original     | 80      | Detail view, archive              |
+| `thumbnail`       | 300x300      | 70      | List/grid thumbnails              |
+| `thumbnail-small` | 200x200      | 65      | Mobile, fast-loading thumbnails   |
+| `thumbnail-large` | 512x512      | 75      | Card previews, retina thumbnails  |
+| `ogp`             | 1200x630     | 85      | Open Graph share images           |
+| `thumbnail-1024`  | 1024x1024    | 25      | Large lightweight thumbnails      |
+| `original-2048`   | 2048x2048    | 90      | High-quality export               |
 
-詳細は [CONFIGURATIONS.md](./CONFIGURATIONS.md) を参照してください。
+For details, see [CONFIGURATIONS.md](./CONFIGURATIONS.md).
 
-### 方法3: 設定ファイルをカスタマイズ
+## Web App Usage
 
-`configs/` ディレクトリ内の設定ファイルを編集できます。
+The web app lives in `web/` and runs fully client-side.
 
-例: `configs/thumbnail.json`
+### Run locally (quick preview)
 
-```json
-{
-  "name": "サムネイル版（300px）",
-  "description": "リスト表示、グリッド表示、一覧ページ用",
-  "sourceDir": "./assets",
-  "outputDir": "./assets_webp_thumbnail",
-  "quality": 70,
-  "targetSize": 50,
-  "minQuality": 60,
-  "resize": {
-    "enabled": true,
-    "width": 300,
-    "height": 300
-  }
-}
-```
+You can open `web/index.html` directly, or serve the folder with any static server.
 
-## 設定オプション
+### How it works
 
-| オプション       | 説明                                           |
-| ---------------- | ---------------------------------------------- |
-| `sourceDir`      | 変換元の画像が格納されているディレクトリのパス |
-| `outputDir`      | 変換後のWebP画像を保存するディレクトリのパス   |
-| `quality`        | WebP変換の初期品質設定 (0-100)                 |
-| `targetSize`     | 目標ファイルサイズ (KB)                        |
-| `minQuality`     | 許容する最低品質値                             |
-| `resize.enabled` | 画像リサイズ機能の有効/無効                    |
-| `resize.width`   | リサイズする最大幅                             |
-| `resize.height`  | リサイズする最大高さ                           |
-| `extensions`     | 変換対象とするファイル拡張子の配列             |
-| `concurrency`    | 同時に実行する変換プロセスの数                 |
+- Drop or select multiple image files
+- Choose a preset (or custom settings)
+- Convert to WebP in-browser
+- Download each file or export all converted files as ZIP
 
-## 変換結果の例
+## GitHub Pages Deployment
 
-実際の変換結果（57ファイル）:
+This repository includes a workflow:
 
-### 高品質版（元サイズ維持）
+- `.github/workflows/deploy-pages.yml`
 
-- 元サイズ: 35.05 MB
-- 変換後: 2.56 MB
-- 削減率: **92.71%**
-- 処理時間: 2.40秒
+On push to `main` or `master`, it deploys the `web/` directory to GitHub Pages.
+The expected public URL is:
 
-### サムネイル版（300x300px）
+- `https://senri1101.github.io/webp-converter/`
 
-- 元サイズ: 35.05 MB
-- 変換後: 0.35 MB
-- 削減率: **99.01%**
-- 平均ファイルサイズ: 6.14 KB
-- 処理時間: 1.26秒
+### One-time repository setup
 
-## OGP画像としての最適化
+1. Open repository settings on GitHub
+2. Go to **Pages**
+3. Set **Build and deployment** source to **GitHub Actions**
 
-OGP（Open Graph Protocol）画像として使用する場合は、`ogp` 設定を使用してください:
+After that, every push to `main` or `master` updates the site.
+
+## Configuration Options (CLI)
+
+| Option           | Description                                            |
+| ---------------- | ------------------------------------------------------ |
+| `sourceDir`      | Input directory path                                   |
+| `outputDir`      | Output directory path                                  |
+| `quality`        | Initial WebP quality (0-100)                           |
+| `targetSize`     | Target file size in KB (`null` to disable size target) |
+| `minQuality`     | Minimum quality allowed while reducing file size       |
+| `resize.enabled` | Enable/disable resizing                                |
+| `resize.width`   | Max width when resizing                                |
+| `resize.height`  | Max height when resizing                               |
+| `extensions`     | Source file extensions to process                      |
+| `concurrency`    | Number of worker threads                               |
+
+## Notes
+
+- Original files are never overwritten.
+- Converted files are written to the configured output directory.
+- For large batches, adjust `concurrency` based on memory and CPU capacity.
+
+## Troubleshooting
+
+**Error: `Cannot find module 'sharp'`**
+Run:
 
 ```bash
-npm run convert:ogp
+npm install
 ```
 
-一般的なOGP画像の推奨サイズである1200×630ピクセル（アスペクト比1.91:1）に最適化されます。
+**Conversion is slow**
+Tune `concurrency` in config files.
 
-## 注意事項
-
-- 大量の画像を処理する場合、十分なメモリを確保してください
-- 元の画像は変更されません。変換結果は別のディレクトリに保存されます
-- 最適な結果を得るには、`quality`と`targetSize`の値を調整してください
-
-## トラブルシューティング
-
-**エラー: 'Error: Cannot find module 'sharp''**  
-依存関係が正しくインストールされていません。`npm install`を実行してください。
-
-**処理が遅い場合**  
-`concurrency`の値を調整して、より多くのCPUコアを利用するか、または少なくしてメモリ使用量を減らしてください。
-
-**ファイルサイズが目標より大きい場合**  
-`quality`の値を下げるか、リサイズ機能を有効にしてください。
+**Output files are larger than expected**
+Lower `quality`, enable resize, or set a smaller `targetSize`.

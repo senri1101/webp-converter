@@ -1,6 +1,6 @@
 {
-  "name": "サムネイル版（1024px）",
-  "description": "サムネイル生成（最大 1024x1024）",
+  "name": "Thumbnail (1024px)",
+  "description": "Thumbnail export up to 1024x1024",
   "sourceDir": "./assets",
   "outputDir": "./assets_webp_thumbnail",
   "quality": 25,
@@ -11,5 +11,13 @@
     "width": 1024,
     "height": 1024
   },
-  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+  "extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tiff",
+    ".svg"
+  ]
 }

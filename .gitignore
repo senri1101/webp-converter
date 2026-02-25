@@ -1,16 +1,24 @@
-# Node.js 関連
+# Node.js files
 node_modules/
 npm-debug.log
 yarn-error.log
 
-# 画像ディレクトリ (大量の画像をリポジトリに含めないため)
+# Image folders (avoid committing large source/output files)
 /images/*
 /images_webp/*
+/assets/*
+/assets_webp/*
+/assets_webp_ogp/*
+/assets_webp_thumbnail/*
+/assets_webp_thumbnail_large/*
+/assets_webp_thumbnail_small/*
 
-# ただし、画像ディレクトリ自体は維持するための .gitkeep ファイルは含める
+# Keep placeholder files so directories remain in Git
 !/images/.gitkeep
 !/images_webp/.gitkeep
+!/assets/.gitkeep
+!/assets_webp/.gitkeep
 
-# OS 関連
+# OS metadata
 .DS_Store
 Thumbs.db

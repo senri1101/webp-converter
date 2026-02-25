@@ -1,46 +1,46 @@
 #!/bin/bash
 
-# 色の定義
+# Color palette
 GREEN='\033[0;32m'
 BLUE='\033[0;34m'
 RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-# バナーを表示
+# Banner
 echo -e "${BLUE}"
 echo "----------------------------------------------"
-echo "  WebP一括変換ツール - セットアップスクリプト  "
+echo "  Bulk WebP Converter - Setup Script          "
 echo "----------------------------------------------"
 echo -e "${NC}"
 
-# Node.jsがインストールされているか確認
-echo -e "${YELLOW}Node.jsの確認中...${NC}"
+# Check Node.js
+echo -e "${YELLOW}Checking Node.js...${NC}"
 if ! command -v node &> /dev/null; then
-    echo -e "${RED}Node.jsがインストールされていません。${NC}"
-    echo "https://nodejs.org/からインストールしてください。"
+    echo -e "${RED}Node.js is not installed.${NC}"
+    echo "Please install it from https://nodejs.org/."
     exit 1
 fi
 
-# Node.jsのバージョンを確認
+# Show Node.js version
 NODE_VERSION=$(node -v)
-echo -e "${GREEN}Node.js $NODE_VERSION が見つかりました${NC}"
+echo -e "${GREEN}Found Node.js ${NODE_VERSION}${NC}"
 
-# 必要なディレクトリの作成
-echo -e "${YELLOW}ディレクトリの作成中...${NC}"
-mkdir -p images
-mkdir -p images_webp
+# Create required directories
+echo -e "${YELLOW}Creating directories...${NC}"
+mkdir -p assets
+mkdir -p assets_webp
 
-# 依存関係のインストール
-echo -e "${YELLOW}依存関係のインストール中...${NC}"
+# Install dependencies
+echo -e "${YELLOW}Installing dependencies...${NC}"
 npm install
 
 echo ""
-echo -e "${GREEN}セットアップが完了しました！${NC}"
-echo -e "使用方法:"
-echo -e "1. ${BLUE}images${NC} ディレクトリに変換したい画像ファイルを配置してください"
-echo -e "2. 必要に応じて ${BLUE}convert.js${NC} の設定を編集してください"
-echo -e "3. 以下のコマンドを実行して変換を開始します:"
-echo -e "   ${YELLOW}npm start${NC} または ${YELLOW}node convert.js${NC}"
+echo -e "${GREEN}Setup completed.${NC}"
+echo -e "Usage:"
+echo -e "1. Put source image files into the ${BLUE}assets${NC} directory"
+echo -e "2. Adjust conversion settings in ${BLUE}convert.js${NC} if needed"
+echo -e "3. Run conversion with:"
+echo -e "   ${YELLOW}npm start${NC} or ${YELLOW}node convert.js${NC}"
 echo ""
-echo -e "変換後のWebP画像は ${BLUE}images_webp${NC} ディレクトリに保存されます"
+echo -e "Converted WebP files are saved in ${BLUE}assets_webp${NC}"

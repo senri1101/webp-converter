@@ -1,6 +1,6 @@
 {
-  "name": "オリジナル版（2048px）",
-  "description": "オリジナル生成（最大 2048x2048）",
+  "name": "Original Export (2048px)",
+  "description": "Original export up to 2048x2048",
   "sourceDir": "./assets",
   "outputDir": "./assets_webp",
   "quality": 90,

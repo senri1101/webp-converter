@@ -1,6 +1,6 @@
 {
-  "name": "OGP画像用",
-  "description": "SNSシェア用のOGP画像（1200x630px）",
+  "name": "OGP Image",
+  "description": "For social sharing OGP images (1200x630)",
   "sourceDir": "./assets",
   "outputDir": "./assets_webp_ogp",
   "quality": 85,
@@ -11,5 +11,13 @@
     "width": 1200,
     "height": 630
   },
-  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+  "extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tiff",
+    ".svg"
+  ]
 }

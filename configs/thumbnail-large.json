@@ -1,6 +1,6 @@
 {
-  "name": "高品質サムネイル版（512px）",
-  "description": "カード表示、中サイズプレビュー、Retinaディスプレイ対応",
+  "name": "High Quality Thumbnail (512px)",
+  "description": "For cards, medium previews, and retina displays",
   "sourceDir": "./assets",
   "outputDir": "./assets_webp_thumbnail_large",
   "quality": 75,
@@ -11,5 +11,13 @@
     "width": 512,
     "height": 512
   },
-  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+  "extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tiff",
+    ".svg"
+  ]
 }

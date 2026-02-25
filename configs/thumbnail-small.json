@@ -1,6 +1,6 @@
 {
-  "name": "超軽量サムネイル版（200px）",
-  "description": "モバイルアプリのリスト表示、超高速読み込み用",
+  "name": "Ultra Lightweight Thumbnail (200px)",
+  "description": "For mobile list views and ultra-fast loading",
   "sourceDir": "./assets",
   "outputDir": "./assets_webp_thumbnail_small",
   "quality": 65,
@@ -11,5 +11,13 @@
     "width": 200,
     "height": 200
   },
-  "extensions": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"]
+  "extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tiff",
+    ".svg"
+  ]
 }
