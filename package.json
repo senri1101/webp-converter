@@ -10,7 +10,8 @@
     "convert:thumbnail": "node convert.js --config=thumbnail",
     "convert:thumbnail-small": "node convert.js --config=thumbnail-small",
     "convert:thumbnail-large": "node convert.js --config=thumbnail-large",
-    "convert:ogp": "node convert.js --config=ogp"
+    "convert:ogp": "node convert.js --config=ogp",
+    "convert:thumbnail-original": "node convert.js --config=thumbnail-1024,original-2048"
   },
   "dependencies": {
     "sharp": "^0.32.6"

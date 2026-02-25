@@ -48,6 +48,9 @@ npm run convert:thumbnail-large
 
 # OGP画像用（1200x630px）で変換
 npm run convert:ogp
+
+# 1024pxサムネ + 2048pxオリジナルを一括で生成
+npm run convert:thumbnail-original
 ```
 
 ### 方法2: カスタム設定ファイルを使用
@@ -56,15 +59,23 @@ npm run convert:ogp
 node convert.js --config=設定ファイル名
 ```
 
+複数の設定を一括で実行する場合はカンマ区切りで指定します:
+
+```bash
+node convert.js --config=thumbnail-1024,original-2048
+```
+
 ### 利用可能な設定一覧
 
-| 設定名 | サイズ | 品質 | 用途 |
-| -------　|　--------　|　------　|　------　|
-| `high-quality` | 元サイズ維持 | 80% | 詳細表示、アーカイブ |
-| `thumbnail` | 300x300px | 70% | リスト・グリッド表示 |
-| `thumbnail-small` | 200x200px | 65% | モバイル、超高速読み込み |
-| `thumbnail-large` | 512x512px | 75% | カード表示、Retina対応 |
-| `ogp` | 1200x630px | 85% | SNSシェア用OGP画像 |
+| 設定名            | サイズ       | 品質 | 用途                     |
+| ----------------- | ------------ | ---- | ------------------------ |
+| `high-quality`    | 元サイズ維持 | 80%  | 詳細表示、アーカイブ     |
+| `thumbnail`       | 300x300px    | 70%  | リスト・グリッド表示     |
+| `thumbnail-small` | 200x200px    | 65%  | モバイル、超高速読み込み |
+| `thumbnail-large` | 512x512px    | 75%  | カード表示、Retina対応   |
+| `ogp`             | 1200x630px   | 85%  | SNSシェア用OGP画像       |
+| `thumbnail-1024`  | 1024x1024px  | 25%  | 大きめサムネイル         |
+| `original-2048`   | 2048x2048px  | 90%  | 高品質オリジナル         |
 
 詳細は [CONFIGURATIONS.md](./CONFIGURATIONS.md) を参照してください。
 
@@ -93,18 +104,18 @@ node convert.js --config=設定ファイル名
 
 ## 設定オプション
 
-| オプション | 説明 |
-|　------------　|　------　|
-| `sourceDir` | 変換元の画像が格納されているディレクトリのパス |
-| `outputDir` | 変換後のWebP画像を保存するディレクトリのパス |
-| `quality` | WebP変換の初期品質設定 (0-100) |
-| `targetSize` | 目標ファイルサイズ (KB) |
-| `minQuality` | 許容する最低品質値 |
-| `resize.enabled` | 画像リサイズ機能の有効/無効 |
-| `resize.width` | リサイズする最大幅 |
-| `resize.height` | リサイズする最大高さ |
-| `extensions` | 変換対象とするファイル拡張子の配列 |
-| `concurrency` | 同時に実行する変換プロセスの数 |
+| オプション       | 説明                                           |
+| ---------------- | ---------------------------------------------- |
+| `sourceDir`      | 変換元の画像が格納されているディレクトリのパス |
+| `outputDir`      | 変換後のWebP画像を保存するディレクトリのパス   |
+| `quality`        | WebP変換の初期品質設定 (0-100)                 |
+| `targetSize`     | 目標ファイルサイズ (KB)                        |
+| `minQuality`     | 許容する最低品質値                             |
+| `resize.enabled` | 画像リサイズ機能の有効/無効                    |
+| `resize.width`   | リサイズする最大幅                             |
+| `resize.height`  | リサイズする最大高さ                           |
+| `extensions`     | 変換対象とするファイル拡張子の配列             |
+| `concurrency`    | 同時に実行する変換プロセスの数                 |
 
 ## 変換結果の例
 

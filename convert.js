@@ -9,45 +9,17 @@ const {
   workerData,
 } = require("worker_threads");
 
-// Load configuration from file or use default
-function loadConfig() {
-  const args = process.argv.slice(2);
-  const configArg = args.find((arg) => arg.startsWith("--config="));
+const DEFAULT_EXTENSIONS = [
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".gif",
+  ".bmp",
+  ".tiff",
+  ".svg",
+];
 
-  if (configArg) {
-    const configName = configArg.split("=")[1];
-    const configPath = path.join(__dirname, "configs", `${configName}.json`);
-
-    if (!fs.existsSync(configPath)) {
-      console.error(`Error: Config file not found: ${configPath}`);
-      console.log("\nAvailable configs:");
-      const configsDir = path.join(__dirname, "configs");
-      if (fs.existsSync(configsDir)) {
-        fs.readdirSync(configsDir)
-          .filter((f) => f.endsWith(".json"))
-          .forEach((f) => console.log(`  - ${f.replace(".json", "")}`));
-      }
-      process.exit(1);
-    }
-
-    try {
-      const configData = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-      console.log(`\nLoaded config: ${configData.name}`);
-      console.log(`Description: ${configData.description}\n`);
-
-      // Add concurrency if not specified
-      if (!configData.concurrency) {
-        configData.concurrency = Math.max(1, cpus().length - 1);
-      }
-
-      return configData;
-    } catch (error) {
-      console.error(`Error parsing config file: ${error.message}`);
-      process.exit(1);
-    }
-  }
-
-  // Default configuration
+function getDefaultConfig() {
   return {
     sourceDir: "./assets",
     outputDir: "./assets_webp",
@@ -59,16 +31,86 @@ function loadConfig() {
       width: 1200,
       height: 630,
     },
-    extensions: [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".tiff", ".svg"],
+    extensions: DEFAULT_EXTENSIONS,
     concurrency: Math.max(1, cpus().length - 1),
   };
 }
 
-const config = loadConfig();
+function normalizeConfig(configData) {
+  const defaults = getDefaultConfig();
+  const normalized = {
+    ...defaults,
+    ...configData,
+    resize: { ...defaults.resize, ...(configData.resize || {}) },
+    extensions: configData.extensions || defaults.extensions,
+  };
 
-// Ensure output directory exists
-if (!fs.existsSync(config.outputDir)) {
-  fs.mkdirSync(config.outputDir, { recursive: true });
+  if (typeof normalized.minQuality !== "number") {
+    normalized.minQuality = normalized.quality;
+  }
+  if (normalized.targetSize == null) {
+    normalized.targetSize = null;
+  }
+  if (!normalized.concurrency) {
+    normalized.concurrency = Math.max(1, cpus().length - 1);
+  }
+
+  return normalized;
+}
+
+function listAvailableConfigs() {
+  console.log("\nAvailable configs:");
+  const configsDir = path.join(__dirname, "configs");
+  if (fs.existsSync(configsDir)) {
+    fs.readdirSync(configsDir)
+      .filter((f) => f.endsWith(".json"))
+      .forEach((f) => console.log(`  - ${f.replace(".json", "")}`));
+  }
+}
+
+// Load configuration from file(s) or use default
+function loadConfigs() {
+  const args = process.argv.slice(2);
+  const configArg = args.find((arg) => arg.startsWith("--config="));
+
+  if (!configArg) {
+    return [getDefaultConfig()];
+  }
+
+  const configNames = configArg
+    .split("=")[1]
+    .split(",")
+    .map((name) => name.trim())
+    .filter(Boolean);
+
+  if (configNames.length === 0) {
+    console.error("Error: No config names provided.");
+    listAvailableConfigs();
+    process.exit(1);
+  }
+
+  return configNames.map((configName) => {
+    const configPath = path.join(__dirname, "configs", `${configName}.json`);
+
+    if (!fs.existsSync(configPath)) {
+      console.error(`Error: Config file not found: ${configPath}`);
+      listAvailableConfigs();
+      process.exit(1);
+    }
+
+    try {
+      const configData = JSON.parse(fs.readFileSync(configPath, "utf-8"));
+      const normalized = normalizeConfig(configData);
+
+      console.log(`\nLoaded config: ${normalized.name}`);
+      console.log(`Description: ${normalized.description}\n`);
+
+      return normalized;
+    } catch (error) {
+      console.error(`Error parsing config file: ${error.message}`);
+      process.exit(1);
+    }
+  });
 }
 
 // Worker thread logic
@@ -99,6 +141,7 @@ if (!isMainThread) {
 
       // Binary search for appropriate quality to meet target size
       if (
+        settings.targetSize != null &&
         fileSize > settings.targetSize &&
         currentQuality > settings.minQuality
       ) {
@@ -163,10 +206,16 @@ if (!isMainThread) {
 
 // Main thread logic
 if (isMainThread) {
-  async function processFiles() {
-    try {
-      // Get all files in the source directory recursively
-      const files = await getFiles(config.sourceDir);
+  async function processFiles(config) {
+    return new Promise(async (resolve) => {
+      try {
+        // Ensure output directory exists
+        if (!fs.existsSync(config.outputDir)) {
+          fs.mkdirSync(config.outputDir, { recursive: true });
+        }
+
+        // Get all files in the source directory recursively
+        const files = await getFiles(config.sourceDir);
 
       // Filter files by extensions
       const imageFiles = files.filter((file) => {
@@ -174,12 +223,13 @@ if (isMainThread) {
         return config.extensions.includes(ext);
       });
 
-      if (imageFiles.length === 0) {
-        console.log("No image files found in the source directory.");
-        return;
-      }
+        if (imageFiles.length === 0) {
+          console.log("No image files found in the source directory.");
+          resolve();
+          return;
+        }
 
-      console.log(`Found ${imageFiles.length} image files to convert.`);
+        console.log(`Found ${imageFiles.length} image files to convert.`);
 
       // Process images with worker threads
       let completedCount = 0;
@@ -272,6 +322,7 @@ if (isMainThread) {
               ).toFixed(2)}%)`
             );
             console.log(`Time taken: ${duration.toFixed(2)} seconds`);
+            resolve();
           }
         });
 
@@ -284,18 +335,25 @@ if (isMainThread) {
           const nextIndex = completedCount + failedCount + workers.size;
           if (nextIndex < imageFiles.length) {
             createWorker(imageFiles[nextIndex]);
+          } else if (workers.size === 0) {
+            resolve();
           }
         });
       }
 
       // Start initial batch of workers
-      const initialBatchSize = Math.min(config.concurrency, imageFiles.length);
-      for (let i = 0; i < initialBatchSize; i++) {
-        createWorker(imageFiles[i]);
+        const initialBatchSize = Math.min(
+          config.concurrency,
+          imageFiles.length
+        );
+        for (let i = 0; i < initialBatchSize; i++) {
+          createWorker(imageFiles[i]);
+        }
+      } catch (error) {
+        console.error("An error occurred:", error);
+        resolve();
       }
-    } catch (error) {
-      console.error("An error occurred:", error);
-    }
+    });
   }
 
   // Helper function to get all files in a directory recursively
@@ -313,5 +371,14 @@ if (isMainThread) {
   }
 
   // Run the conversion process
-  processFiles();
+  async function run() {
+    const configs = loadConfigs();
+    for (const config of configs) {
+      await processFiles(config);
+    }
+  }
+
+  run().catch((error) => {
+    console.error("An unexpected error occurred:", error);
+  });
 }

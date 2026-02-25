@@ -1,0 +1,23 @@
+{
+  "name": "オリジナル版（2048px）",
+  "description": "オリジナル生成（最大 2048x2048）",
+  "sourceDir": "./assets",
+  "outputDir": "./assets_webp",
+  "quality": 90,
+  "targetSize": null,
+  "minQuality": 90,
+  "resize": {
+    "enabled": true,
+    "width": 2048,
+    "height": 2048
+  },
+  "extensions": [
+    ".jpg",
+    ".jpeg",
+    ".png",
+    ".gif",
+    ".bmp",
+    ".tiff",
+    ".svg"
+  ]
+}
